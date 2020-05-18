@@ -23,13 +23,17 @@ def check_pw(password):
   response = request_data(query_chars)
   return get_leaks_count(response, chars_to_check)
   
-def main(args):
-  for password in args:
-    count = check_pw(password)
-    if count:
-      print(f'{password} was found {count} times')
-    else:
-      print(f'{password} has not been found')
+def main(arg):
+  try:
+    with open(arg) as pw_file:
+      for password in (line.strip() for line in pw_file):
+        count = check_pw(password)
+        if count:
+          print(f'{password} was found {count} times')
+        else:
+          print(f'{password} has not been found')
+  except FileNotFoundError as err:
+    print('file does not exist')
+    raise err
 
-main(sys.argv[1:])
-
+main(sys.argv[1])
